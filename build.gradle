@@ -15,12 +15,12 @@ buildscript {
     }
 }
 
+apply plugin: 'java-library'
 //apply plugin: 'java'
 //apply plugin: 'eclipse'
 //apply plugin: 'idea'
 apply plugin: 'net.serenity-bdd.aggregator'
 //apply from: "$rootDir/gradle/libraries.gradle"
-apply plugin: 'java-library'
 
 
 
