@@ -15,11 +15,13 @@ buildscript {
     }
 }
 
-apply plugin: 'java'
-apply plugin: 'eclipse'
-apply plugin: 'idea'
+//apply plugin: 'java'
+//apply plugin: 'eclipse'
+//apply plugin: 'idea'
 apply plugin: 'net.serenity-bdd.aggregator'
-apply from: "$rootDir/gradle/libraries.gradle"
+//apply from: "$rootDir/gradle/libraries.gradle"
+apply plugin: 'java-library'
+
 
 
 sourceCompatibility = 1.8
