@@ -1,84 +1,76 @@
-//defaultTasks 'clean','test','aggregate'
+defaultTasks 'clean','test','aggregate'
 
 repositories {
+    mavenCentral()
     mavenLocal()
-    jcenter()
 }
 
 buildscript {
     repositories {
-        mavenLocal()
-        jcenter()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
     }
     dependencies {
+        //al cambiar version validar generacion de reporte
         classpath("net.serenity-bdd:serenity-gradle-plugin:2.1.7")
+        //classpath("org.gradle:test-retry-gradle-plugin:1.4.1")
     }
 }
 
-apply plugin: 'java-library'
-//apply plugin: 'java'
-//apply plugin: 'eclipse'
-//apply plugin: 'idea'
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
 apply plugin: 'net.serenity-bdd.aggregator'
-//apply from: "$rootDir/gradle/libraries.gradle"
-
+//apply plugin: 'org.gradle.test-retry'
 
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-/**
- * This is needed to make sure there are no Cucumber 2 dependencies in the classpath.
- */
-/*
-configurations.all {
-    resolutionStrategy {
-        force "io.cucumber:cucumber-core:${cucumberVersion}"
-    }
+ext {
+    slf4jVersion = '1.7.7'
+    serenityCoreVersion = '2.3.2'
+    junitVersion = '4.13.1'
+    assertJVersion = '3.22.0'
+    logbackVersion = '1.2.10'
 }
-*/
+
 dependencies {
-    compile libs.logback
 
-    compile libs.test.cucumber.java,
-            libs.test.cucumber.junit,
-            libs.test.serenity.core,
-            libs.test.serenity.screenplay,
-            libs.test.serenity.junit,
-            libs.test.serenity.screenplayWebdriver,
-            libs.test.serenity.ensure,
-            libs.test.serenity.cucumber,
-            libs.test.junit,
-            libs.test.assertj
+    implementation "net.serenity-bdd:serenity-core:${serenityCoreVersion}",
+            "net.serenity-bdd:serenity-cucumber6:${serenityCoreVersion}",
+            "net.serenity-bdd:serenity-screenplay:${serenityCoreVersion}",
+            "net.serenity-bdd:serenity-screenplay-webdriver:${serenityCoreVersion}",
 
+            "ch.qos.logback:logback-classic:${logbackVersion}",
+            "org.slf4j:slf4j-api:${slf4jVersion}"
+
+
+    testImplementation "net.serenity-bdd:serenity-ensure:${serenityCoreVersion}",
+            "junit:junit:${junitVersion}",
+            "org.assertj:assertj-core:${assertJVersion}"
 }
-
-/*
-test {
-    testLogging.showStandardStreams = true
-    systemProperties System.getProperties()
-}
-
-gradle.startParameter.continueOnFailure = true
-
-test.finalizedBy(aggregate)
-*/
 
 serenity{
     reports = ["json-summary"]
 }
 
-tasks.withType(Test) {
+test {
+    //retry{
+        //maxRetries = 2
+        //maxFailures = 20
+        //failOnPassedAfterRetry = true
+    //}
     systemProperties System.getProperties()
-    def forks = 8
-    maxParallelForks = forks
-    //include '**/Runner**.class'
+    //junit.retry.tests=true
+    //max.retries= 3
+
+    maxParallelForks = 8
+    //include '**/**_$ProyectoBaseRunner.class'
     testLogging.showStandardStreams = true
-    finalizedBy(aggregate)
 }
 
-sourceCompatibility = '1.8'
 gradle.startParameter.continueOnFailure = true
-description = 'Merchant - Reworth - Test Cases Automation'
-test.finalizedBy(aggregate)
 
+test.finalizedBy(aggregate)
